@@ -12,9 +12,10 @@
     -webkit-box-align: start;
     -ms-flex-align: start;
     align-items: flex-start;
-    margin: 100px auto;
+    margin: 50px auto;
 }
 .hpm-input-container input {
+    display: none;
     -webkit-box-ordinal-group: 11;
     order: 10;
     -ms-flex-order: 10;
@@ -23,7 +24,6 @@
     width: 100%;
     padding: 15px 0;
     font-size: 20px;
-    border-bottom: 1px solid #d5d5d5;
     text-indent: 10px;
 }
 .hpm-input-container input::-moz-placeholder {
@@ -36,19 +36,12 @@
     opacity: 0;
 }
 .hpm-input-container input,
-.hpm-input-container label {
+.message {
     transition: all 0.3s;
 }
-.hpm-input-container label {
-    -webkit-box-ordinal-group: 101;
-    -ms-flex-order: 100;
+.message {
     font-size: 18px;
-    order: 100;
     color: #3f4f5b;
-    -webkit-transform-origin: left bottom;
-    transform-origin: left bottom;
-    -webkit-transform: translate(10px, 40px);
-    transform: translate(0px, 40px);
 }
 .hpm-input-container .bottom-line {
     order: 2;
@@ -107,7 +100,37 @@
 }
 
 .hpm-avatar {
-    height: 64px;
-    width: 64px;
+    height: 32px;
+    width: 32px;
     object-fit: cover;
+    margin-right: 1rem !important;
+}
+
+.symbol-line {
+    order: 100;
+    display: flex;
+    align-items: center;
+}
+
+.purple {
+    color: #542de0;
+}
+
+.unlock-btn {
+    background-color: #542de0;
+    color: #fff;
+    border-color: #542de0;
+    display: inline-block;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    border: 1px solid #dcdfe6;
+    text-align: center;
+    box-sizing: border-box;
+    outline: 0;
+    margin: 0;
+    font-weight: 400;
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 4px;
 }
