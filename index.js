@@ -56,10 +56,10 @@ https.get('https://api.smartsignature.io/trade/direct/73?type=tokenId', (res) =>
             console.log(body)
             body = JSON.parse(body)
             const config = {
-                abstract: '这篇文章使用了 Fan 票加密，使用' + body.data.token_name + ' (' + body.data.symbol + ') ' + '来解锁文章',
+                abstract: '这篇文章使用了 Fan 票加密，持有' + data.amount + body.data.token_name + ' (' + body.data.symbol + ') ' + '来解锁文章',
                 wrongPassMessage: '解锁失败了呢。',
                 wrongHashMessage: '好像文章加密的时候的时候遗漏了几页呢，不过这些剩下的内容还是可以看看啦',
-                message: '使用' + body.data.token_name + ' (' + body.data.symbol + ') ' + '解锁文章',
+                message: '持有<span class="purple"> ' + data.amount + body.data.token_name + ' (' + body.data.symbol + ') ' + '</span>解锁文章',
                 avatar: 'https://ssimg.frontenduse.top' + body.data.logo
             }
 
