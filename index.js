@@ -17,44 +17,45 @@ const ivSalt = textToArray('XDUSdgPjUPWgLXnrPqtl')
 
 let template = fs.readFileSync(path.resolve(__dirname, './lib/template.html')).toString()
 
-https.get('https://api.smartsignature.io/trade/direct/73?type=tokenId', (res) => {
-    res.setEncoding('utf8')
-    res.on('data', function (body) {
+hexo.extend.filter.register('after_post_render', (data) => {
 
-        hexo.extend.filter.register('after_post_render', (data) => {
+    let password = data.password
+    let matatakiToken = data.matatakiToken
+    /**
+     * If password or matataki is empty, disable this functionality
+     */
+    if (password === "" || matatakiToken === "") {
+        return data
+    }
 
-            let password = data.password
-            let matatakiToken = data.matatakiToken
-            /**
-             * If password or matataki is empty, disable this functionality
-             */
-            if (password === "" || matatakiToken === "") {
-                return data
-            }
+    /**
+     * If password matataki is never defined, disable this functionality
+     */
+    if (password === undefined || matatakiToken === undefined) {
+        return data
+    }
 
-            /**
-             * If password matataki is never defined, disable this functionality
-             */
-            if (password === undefined || matatakiToken === undefined) {
-                return data
-            }
+    data.origin = data.content
+    let content = data.content.trim()
 
-            data.origin = data.content
-            let content = data.content.trim()
+    const key = crypto.pbkdf2Sync(password, keySalt, 1024, 32, 'sha256')
+    const iv = crypto.pbkdf2Sync(password, ivSalt, 512, 16, 'sha256')
 
-            const key = crypto.pbkdf2Sync(password, keySalt, 1024, 32, 'sha256')
-            const iv = crypto.pbkdf2Sync(password, ivSalt, 512, 16, 'sha256')
+    const cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
+    const hmac = crypto.createHmac('sha256', key)
 
-            const cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
-            const hmac = crypto.createHmac('sha256', key)
+    let encryptedData = cipher.update(content, 'utf8', 'hex')
+    hmac.update(content, 'utf8')
+    encryptedData += cipher.final('hex')
+    const hmacDigest = hmac.digest('hex')
 
-            let encryptedData = cipher.update(content, 'utf8', 'hex')
-            hmac.update(content, 'utf8')
-            encryptedData += cipher.final('hex')
-            const hmacDigest = hmac.digest('hex')
+    https.get('https://api.smartsignature.io/trade/direct/' + matatakiToken + '?type=tokenId', (res) => {
+        res.setEncoding('utf8')
+        res.on('data', function (body) {
 
             console.log(body)
             body = JSON.parse(body)
+
             const config = {
                 abstract: '这篇文章使用了 Fan 票加密，持有' + data.amount + body.data.token_name + ' (' + body.data.symbol + ') ' + '来解锁文章',
                 wrongPassMessage: '解锁失败了呢。',
@@ -72,6 +73,7 @@ https.get('https://api.smartsignature.io/trade/direct/73?type=tokenId', (res) =>
 
             data.content += `<script src="${hexo.config.root}lib/hpm.js"></script><link href="${hexo.config.root}css/hpm.css" rel="stylesheet" type="text/css">`
             data.excerpt = data.more = config.abstract
+
         })
     })
 })
