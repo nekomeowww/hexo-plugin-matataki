@@ -70,7 +70,6 @@ https.get('https://api.smartsignature.io/trade/direct/73?type=tokenId', (res) =>
                 .replace(/{{hpmMessage}}/g, config.message)
                 .replace(/{{hpmSymbolAvatar}}/g, config.avatar)
 
-            console.log(data.content)
             data.content += `<script src="${hexo.config.root}lib/hpm.js"></script><link href="${hexo.config.root}css/hpm.css" rel="stylesheet" type="text/css">`
             data.excerpt = data.more = config.abstract
         })
