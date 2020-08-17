@@ -14,57 +14,12 @@
     align-items: flex-start;
     margin: 50px auto;
 }
-.hpm-input-container input {
-    display: none;
-    -webkit-box-ordinal-group: 11;
-    order: 10;
-    -ms-flex-order: 10;
-    outline: none;
-    border: none;
-    width: 100%;
-    padding: 15px 0;
-    font-size: 20px;
-    text-indent: 10px;
-}
-.hpm-input-container input::-moz-placeholder {
-    opacity: 0;
-}
-.hpm-input-container input::-webkit-input-placeholder {
-    opacity: 0;
-}
-.hpm-input-container input:-ms-input-placeholder {
-    opacity: 0;
-}
-.hpm-input-container input,
 .message {
     transition: all 0.3s;
 }
 .message {
     font-size: 18px;
     color: #3f4f5b;
-}
-.bottom-line {
-    display: none;
-}
-.hpm-input-container .bottom-line {
-    order: 2;
-    width: 0;
-    height: 2px;
-    background: #658db5;
-    transition: all 0.3s;
-}
-.hpm-input-container input:focus {
-    border-bottom-color: #fff;
-}
-.hpm-input-container input:focus ~ div,
-.hpm-input-container input:not(:placeholder-shown) ~ div {
-    width: 100%;
-}
-.hpm-input-container input:focus + label,
-.hpm-input-container input:not(:placeholder-shown) + label {
-    color: #52616c;
-    -webkit-transform: translate(10px) scale(0.9);
-    transform: translate(10px) scale(0.9);
 }
 
 .hpm-button {
@@ -103,8 +58,8 @@
 }
 
 .hpm-avatar {
-    height: 32px;
-    width: 32px;
+    height: 36px;
+    width: 36px;
     object-fit: cover;
     margin-right: 1rem !important;
 }
@@ -119,11 +74,30 @@
     color: #542de0;
 }
 
-.unlock-btn {
+#login-btn {
     background-color: #542de0;
     color: #fff;
     border-color: #542de0;
     display: inline-block;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    border: 1px solid #dcdfe6;
+    text-align: center;
+    box-sizing: border-box;
+    outline: 0;
+    margin: 0;
+    font-weight: 400;
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+#unlock-btn {
+    display: none;
+    background-color: #542de0;
+    color: #fff;
+    border-color: #542de0;
     line-height: 1;
     white-space: nowrap;
     cursor: pointer;
