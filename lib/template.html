@@ -2,13 +2,14 @@
     <div class="hpm-input-container">
         <div class="symbol-line">
             <img src="{{hpmSymbolAvatar}}" class="hpm-avatar" />
-            <div class="message" for="hpmPass">{{hpmMessage}}</div>
         </div>
-        <input type="password" id="hpmPass" placeholder="" />
-        <div class="bottom-line"></div>
         <div style="display: flex;justify-content: flex-end;width: 100%;">
-            <div class="unlock-btn">解锁</div>
+            <a href="{{hpmHref}}"><div id="login-btn">解锁</div></a>
+            <div id="unlock-btn">解锁</div>
         </div>
     </div>
+    <script id="hpmToken" type="hpmToken">{{hpmToken}}</script>
+    <script id="hpmAmount" type="hpmAmount">{{hpmAmount}}</script>
+    <script id="hpmName" type="hpmName">{{hpmEncrypName}}</script>
     <script id="hpmData" type="hpmData" data-hmacdigest="{{hpmHmacDigest}}">{{hpmEncryptedData}}</script>
 </div>
