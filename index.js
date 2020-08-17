@@ -8,6 +8,7 @@ const crypto = require('crypto')
 
 // Local Packages
 const { textToArray, hexToArray } = require('./src/util.js')
+const { default: Axios } = require('axios')
 
 /**
  * Get Two Salt at https://www.random.org/strings/?num=2&len=20&digits=on&upperalpha=on&loweralpha=on&unique=on&format=html&rnd=new
@@ -17,10 +18,14 @@ const ivSalt = textToArray('XDUSdgPjUPWgLXnrPqtl')
 
 let template = fs.readFileSync(path.resolve(__dirname, './lib/template.html')).toString()
 
-hexo.extend.filter.register('after_post_render', (data) => {
+hexo.extend.filter.register('after_post_render', async (data) => {
 
-    let password = data.password
-    let matatakiToken = data.matatakiToken
+    let href = hexo.config.fanlock || hexo.theme.config.fanlock || data.matataki.oauth || 'https://developer.matataki.io'
+    let name = data.matataki.name || data.source.replace(/^_post\/|^.*\//, '').replace(/\.md$/, '').trim()
+    let mode = data.matataki.mode
+    let password = data.matataki.password
+    let matatakiToken = data.matataki.token
+    let amount = data.matataki.amount
     /**
      * If password or matataki is empty, disable this functionality
      */
@@ -49,33 +54,30 @@ hexo.extend.filter.register('after_post_render', (data) => {
     encryptedData += cipher.final('hex')
     const hmacDigest = hmac.digest('hex')
 
-    https.get('https://api.smartsignature.io/trade/direct/' + matatakiToken + '?type=tokenId', (res) => {
-        res.setEncoding('utf8')
-        res.on('data', function (body) {
+    const res = await Axios.get('https://api.smartsignature.io/minetoken/' + matatakiToken)
+    let body = res.data
 
-            console.log(body)
-            body = JSON.parse(body)
+    const config = {
+        abstract: '这篇文章使用了 Fan 票加密，持有' + amount + body.data.token.name + ' (' + body.data.token.symbol + ') ' + '来解锁文章',
+        wrongPassMessage: '解锁失败了呢。',
+        wrongHashMessage: '好像文章加密的时候的时候遗漏了几页呢，不过这些剩下的内容还是可以看看啦',
+        message: '持有<span class="purple"> ' + amount + body.data.token.name + ' (' + body.data.token.symbol + ') ' + '</span>解锁文章',
+        avatar: 'https://ssimg.frontenduse.top' + body.data.token.logo
+    }
 
-            const config = {
-                abstract: '这篇文章使用了 Fan 票加密，持有' + data.amount + body.data.token_name + ' (' + body.data.symbol + ') ' + '来解锁文章',
-                wrongPassMessage: '解锁失败了呢。',
-                wrongHashMessage: '好像文章加密的时候的时候遗漏了几页呢，不过这些剩下的内容还是可以看看啦',
-                message: '持有<span class="purple"> ' + data.amount + body.data.token_name + ' (' + body.data.symbol + ') ' + '</span>解锁文章',
-                avatar: 'https://ssimg.frontenduse.top' + body.data.logo
-            }
+    data.content = template.replace(/{{hpmEncryptedData}}/g, encryptedData)
+        .replace(/{{hpmHmacDigest}}/g, hmacDigest)
+        .replace(/{{hpmWrongPassMessage}}/g, config.wrongPassMessage)
+        .replace(/{{hpmWrongHashMessage}}/g, config.wrongHashMessage)
+        .replace(/{{hpmMessage}}/g, config.message)
+        .replace(/{{hpmSymbolAvatar}}/g, config.avatar)
+        .replace(/{{hpmHref}}/g, href)
+        .replace(/{{hpmEncrypName}}/g, name)
+        .replace(/{{hpmAmount}}/g, amount)
+        .replace(/{{hpmToken}}/g, matatakiToken)
 
-            data.content = template.replace(/{{hpmEncryptedData}}/g, encryptedData)
-                .replace(/{{hpmHmacDigest}}/g, hmacDigest)
-                .replace(/{{hpmWrongPassMessage}}/g, config.wrongPassMessage)
-                .replace(/{{hpmWrongHashMessage}}/g, config.wrongHashMessage)
-                .replace(/{{hpmMessage}}/g, config.message)
-                .replace(/{{hpmSymbolAvatar}}/g, config.avatar)
-
-            data.content += `<script src="${hexo.config.root}lib/hpm.js"></script><link href="${hexo.config.root}css/hpm.css" rel="stylesheet" type="text/css">`
-            data.excerpt = data.more = config.abstract
-
-        })
-    })
+    data.content += `</script><link href="${hexo.config.root}css/hpm.css" rel="stylesheet" type="text/css">`
+    data.excerpt = data.more = config.abstract
 })
 
 
@@ -83,9 +85,5 @@ hexo.extend.generator.register('hexo-plugin-matataki', () => [
     {
         'data': () => fs.createReadStream(path.resolve(__dirname, './lib/hpm.css')),
         'path': 'css/hpm.css',
-    },
-    {
-        'data': () => fs.createReadStream(path.resolve(__dirname, './lib/hpm.js')),
-        'path': 'lib/hpm.js',
-    },
+    }
 ]);
