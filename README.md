@@ -1,6 +1,10 @@
 <h1 align="center">hexo-plugin-matataki</h1>
 <p align="center">Hexo Plugin for Matataki Fan Token</p>
 <p align="center">This is a on going working project</p>
+<p align="center">
+<img src="https://github.com/nekomeowww/hexo-plugin-matataki/workflows/Node%20Test/badge.svg" />
+<img src="https://github.com/nekomeowww/hexo-plugin-matataki/workflows/Node%20Build/badge.svg" />
+</p>
 
 ## 安装
 
