@@ -20,7 +20,7 @@ let template = fs.readFileSync(path.resolve(__dirname, './lib/template.html')).t
 
 hexo.extend.filter.register('after_post_render', async (data) => {
 
-    let href = hexo.config.fanlock || hexo.theme.config.fanlock || data.matataki.oauth || 'https://developer.matataki.io'
+    let href = data.matataki.oauth || hexo.theme.config.fanlocker || hexo.config.fanlocker || 'https://developer.matataki.io'
     let name = data.matataki.name || data.source.replace(/^_post\/|^.*\//, '').replace(/\.md$/, '').trim()
     let mode = data.matataki.mode
     let password = data.matataki.password

@@ -32,3 +32,21 @@ matataki:
 3. 密码名称（在保险库中填写一样的内容）
 4. 数量（多少 Fan 票）
 5. 模式（hold 或者 pay，现在仅支持 pay）
+6. oauth（可选，Oauth 地址，在开发者中心获取）
+
+在你的博客根目录配置文件或者主题配置文件填入：
+```
+fanlocker: oauth 地址（可以在开发者中心的 Oauth2 界面找到）
+```
+
+如果你熟悉代码，可以看看源代码中关于读取的部分应该就能理解：
+```
+data.matataki.oauth || hexo.theme.config.fanlocker || hexo.config.fanlocker
+```
+
+如果你要指定不同的文章使用不同的 Oauth 地址，在 Front-matter 中写入
+```
+matataki:
+	oauth: 地址
+```
+就好了
