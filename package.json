@@ -1,9 +1,12 @@
 {
   "name": "hexo-plugin-matataki",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Hexo Plugin for Matataki Fan Token",
   "main": "index.js",
   "repository": "https://github.com/nekomeowww/hexo-plugin-matataki",
   "author": "Ayaka Neko <neko@ayaka.moe>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "build": "node src/build.js"
+  }
 }
