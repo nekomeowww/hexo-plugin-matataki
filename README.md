@@ -22,11 +22,11 @@ hexo-plugin-matataki 的配置很简单，在你的每一篇文章的开头，�
 
 ```
 matataki:
-	token: 0
-	password: password
-	name: name
-	amount: 0
-	mode: hold | pay
+  token: 0
+  password: password
+  name: name
+  amount: 0
+  mode: hold | pay
 ```
 
 这些参数分别是：
@@ -35,7 +35,7 @@ matataki:
 2. 密码（在保险库中也要填写一样的内容）
 3. 密码名称（在保险库中填写一样的内容）
 4. 数量（多少 Fan 票）
-5. 模式（hold 或者 pay，现在仅支持 pay）
+5. 模式（hold 或者 pay，现在仅支持 hold）
 6. oauth（可选，Oauth 地址，在开发者中心获取）
 
 在你的博客根目录配置文件或者主题配置文件填入：
@@ -51,6 +51,6 @@ data.matataki.oauth || hexo.theme.config.fanlocker || hexo.config.fanlocker
 如果你要指定不同的文章使用不同的 Oauth 地址，在 Front-matter 中写入
 ```
 matataki:
-	oauth: 地址
+  oauth: 地址
 ```
 就好了
