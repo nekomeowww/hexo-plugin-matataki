@@ -27,10 +27,11 @@ matataki:
   name: name
   amount: 0
   mode: hold | pay
-  abstract: 这篇文章使用了 Fan 票加密，持有特定 Fan 票来解锁文章
-  message: 持有 Fan 票来解锁文章
-  wrongPassMessage: 解锁失败了呢。如果你是博客作者遇到这个问题，看看保险箱的键值对是否设置正确呢
-  wrongHashMessage: 好像文章加密的时候的时候遗漏了几页呢，不过这些剩下的内容还是可以看看啦
+  # 以下都是可选项
+  # abstract: 这篇文章使用了 Fan 票加密，持有特定 Fan 票来解锁文章
+  # message: 持有 Fan 票来解锁文章
+  # wrongPassMessage: 解锁失败了呢。如果你是博客作者遇到这个问题，看看保险箱的键值对是否设置正确呢
+  # wrongHashMessage: 好像文章加密的时候的时候遗漏了几页呢，不过这些剩下的内容还是可以看看啦
 ```
 
 这些参数分别是：
@@ -70,4 +71,16 @@ matataki:
   template: <div id="hexo-plugin-matataki" data-wpm="{{hpmWrongPassMessage}}" data-whm="{{hpmWrongHashMessage}}"><div class="hpm-input-container"><div class="symbol-line"><img src="{{hpmSymbolAvatar}}" class="hpm-avatar" /><div class="message">{{hpmMessage}}</div></div><div style="display: flex;justify-content: flex-end;width: 100%;"><a href="{{hpmHref}}"><div id="login-btn">解锁</div></a><div id="unlock-btn">解锁</div></div></div><script id="hpmToken" type="hpmToken">{{hpmToken}}</script><script id="hpmAmount" type="hpmAmount">{{hpmAmount}}</script><script id="hpmName" type="hpmName">{{hpmEncrypName}}</script><script id="hpmData" type="hpmData" data-hmacdigest="{{hpmHmacDigest}}">{{hpmEncryptedData}}</script></div>
   wrongPassMessage: 解锁失败了呢。如果你是博客作者遇到这个问题，看看保险箱的键值对是否设置正确呢
   wrongHashMessage: 好像文章加密的时候的时候遗漏了几页呢，不过这些剩下的内容还是可以看看啦
+```
+
+## 常见问题 FAQ
+如果遇到没有更新文章列表内容的情况，请一定删除根目录下的 db.json 文件
+```
+# On Unix System
+rm -rf db.json
+hexo s --debug
+
+# On Windows
+del db.json
+hexo s --debug
 ```
