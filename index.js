@@ -19,8 +19,18 @@ const ivSalt = textToArray('XDUSdgPjUPWgLXnrPqtl')
 let template = fs.readFileSync(path.resolve(__dirname, './lib/template.html')).toString()
 
 hexo.extend.filter.register('after_post_render', async (data) => {
+    const tagEncryptPairs = []
+    let tagUsed = false;
 
-    if (!data.matataki) return
+    if (hexo.config.matataki === undefined) {
+        hexo.config.matataki = []
+    }
+
+    if (('matataki' in hexo.config) && ('tags' in hexo.config.matataki)) {
+        hexo.config.matataki.tags.forEach((tagObj) => {
+            tagEncryptPairs[tagObj.name] = tagObj.password
+        })
+    }
 
     let href = data.matataki.oauth || hexo.theme.config.fanlocker || hexo.config.fanlocker || 'https://developer.matataki.io/doc'
     let name = data.matataki.name || data.source.replace(/^_post\/|^.*\//, '').replace(/\.md$/, '').trim()
@@ -28,6 +38,18 @@ hexo.extend.filter.register('after_post_render', async (data) => {
     let password = data.matataki.password
     let matatakiToken = data.matataki.token
     let amount = data.matataki.amount
+
+    if (data.tags) {
+        data.tags.forEach((cTag) => {
+            if (tagEncryptPairs.hasOwnProperty(cTag.name)) {
+                tagUsed = password ? tagUsed : cTag.name
+                password = password || tagEncryptPairs[cTag.name]
+            }
+        })
+    }
+
+    if (!data.matataki) return data
+
     /**
      * If password or matataki is empty, disable this functionality
      */
@@ -45,6 +67,12 @@ hexo.extend.filter.register('after_post_render', async (data) => {
     data.origin = data.content
     let content = data.content.trim()
 
+    if (tagUsed === false) {
+        log.info(`hexo-plugin-matataki: encrypting "${data.title.trim()}" based on the password configured in Front-matter.`)
+    } else {
+        log.info(`hexo-plugin-matataki: encrypting "${data.title.trim()}" based on Tag: "${tagUsed}".`)
+    }
+
     const key = crypto.pbkdf2Sync(password, keySalt, 1024, 32, 'sha256')
     const iv = crypto.pbkdf2Sync(password, ivSalt, 512, 16, 'sha256')
 
@@ -59,13 +87,15 @@ hexo.extend.filter.register('after_post_render', async (data) => {
     const res = await Axios.get('https://api.smartsignature.io/minetoken/' + matatakiToken)
     let body = res.data
 
-    const config = {
-        abstract: '这篇文章使用了 Fan 票加密，持有' + amount + body.data.token.name + ' (' + body.data.token.symbol + ') ' + '来解锁文章',
-        wrongPassMessage: '解锁失败了呢。',
-        wrongHashMessage: '好像文章加密的时候的时候遗漏了几页呢，不过这些剩下的内容还是可以看看啦',
-        message: '持有<span class="purple"> ' + amount + body.data.token.name + ' (' + body.data.token.symbol + ') ' + '</span>解锁文章',
-        avatar: 'https://ssimg.frontenduse.top' + body.data.token.logo
+    const defaultConfig = {
+        'abstract': '这篇文章使用了 Fan 票加密，持有' + amount + body.data.token.name + ' (' + body.data.token.symbol + ') ' + '来解锁文章',
+        'message': '持有<span class="purple"> ' + amount + body.data.token.name + ' (' + body.data.token.symbol + ') ' + '</span>解锁文章',
+        'wrongPassMessage': '解锁失败了呢。如果你是博客作者遇到这个问题，看看保险箱的键值对是否设置正确呢',
+        'wrongHashMessage': '好像文章加密的时候的时候遗漏了几页呢，不过这些剩下的内容还是可以看看啦',
+        'avatar': 'https://ssimg.frontenduse.top' + body.data.token.logo
     }
+
+    const config = Object.assign(defaultConfig, hexo.config.matataki, data)
 
     data.content = template.replace(/{{hpmEncryptedData}}/g, encryptedData)
         .replace(/{{hpmHmacDigest}}/g, hmacDigest)
@@ -88,4 +118,4 @@ hexo.extend.generator.register('hexo-plugin-matataki', () => [
         'data': () => fs.createReadStream(path.resolve(__dirname, './lib/hpm.css')),
         'path': 'css/hpm.css',
     }
-]);
+])
