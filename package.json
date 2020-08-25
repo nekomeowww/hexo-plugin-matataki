@@ -1,6 +1,6 @@
 {
   "name": "hexo-plugin-matataki",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Hexo Plugin for Matataki Fan Token",
   "main": "index.js",
   "repository": "https://github.com/nekomeowww/hexo-plugin-matataki",
