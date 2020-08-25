@@ -32,6 +32,8 @@ hexo.extend.filter.register('after_post_render', async (data) => {
         })
     }
 
+    if (!data.matataki) return data
+
     let href = data.matataki.oauth || hexo.theme.config.fanlocker || hexo.config.fanlocker || 'https://developer.matataki.io/doc'
     let name = data.matataki.name || data.source.replace(/^_post\/|^.*\//, '').replace(/\.md$/, '').trim()
     let mode = data.matataki.mode
@@ -47,8 +49,6 @@ hexo.extend.filter.register('after_post_render', async (data) => {
             }
         })
     }
-
-    if (!data.matataki) return data
 
     /**
      * If password or matataki is empty, disable this functionality
