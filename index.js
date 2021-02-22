@@ -84,7 +84,7 @@ hexo.extend.filter.register('after_post_render', async (data) => {
     encryptedData += cipher.final('hex')
     const hmacDigest = hmac.digest('hex')
 
-    const res = await Axios.get('https://api.smartsignature.io/minetoken/' + matatakiToken)
+    const res = await Axios.get('https://api.mttk.net/minetoken/' + matatakiToken)
     let body = res.data
 
     const defaultConfig = {
